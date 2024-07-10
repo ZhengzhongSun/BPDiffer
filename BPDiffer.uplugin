@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "BPDiffer",
+	"Description": "The Unreal Editor plugin for freely diff with external blueprint.",
+	"Category": "Other",
+	"CreatedBy": "Zhengzhong Sun",
+	"CreatedByURL": "https://github.com/ZhengzhongSun",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "BPDiffer",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
