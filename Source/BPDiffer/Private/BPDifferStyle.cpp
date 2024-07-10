@@ -43,7 +43,7 @@ TSharedRef< FSlateStyleSet > FBPDifferStyle::Create()
 	TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("BPDifferStyle"));
 	Style->SetContentRoot(IPluginManager::Get().FindPlugin("BPDiffer")->GetBaseDir() / TEXT("Resources"));
 
-	Style->Set("BPDiffer.PluginAction", new IMAGE_BRUSH_SVG(TEXT("PlaceholderButtonIcon"), Icon20x20));
+	Style->Set("BPDiffer.PluginAction", new IMAGE_BRUSH_SVG(TEXT("BPDifferButtonIcon"), Icon20x20));
 	return Style;
 }
 
