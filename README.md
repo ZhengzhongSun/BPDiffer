@@ -26,8 +26,17 @@ This is a simple Unreal Editor plugin that allows user to Blueprint Diff with ev
 
 1. Open any blueprint asset you want to diff
 2. You should see a new button in the toolbar called "BPDiffer", click it
+
+	<img src="Docs/Images/BPDifferButton.jpg"/>
+
 3. Select the blueprint file you want to diff with in the pop-up File Dialog window
+
+	<img src="Docs/Images/FileDialogWindow.jpg"/>
+
 4. Check result in the Blueprint Diff window
+
+	<img src="Docs/Images/BlueprintDiffWindow.jpg"/>
+
 5. Done
 
 ## To Do
