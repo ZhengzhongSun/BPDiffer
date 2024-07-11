@@ -6,9 +6,10 @@
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
 
-#include <Kismet/KismetSystemLibrary.h>
 #include <IDesktopPlatform.h>
 #include <DesktopPlatformModule.h>
+#include <IAssetTools.h>
+#include <AssetToolsModule.h>
 
 static const FName BPDifferTabName("BPDiffer");
 
@@ -50,7 +51,7 @@ void FBPDifferModule::ShutdownModule()
 }
 
 // Get the object of the last opened asset
-UObject* GetLastOpenedObject()
+static UObject* GetLastOpenedObject()
 {
 	UAssetEditorSubsystem* AssetEditorSubsystem = GEditor->GetEditorSubsystem<UAssetEditorSubsystem>();
 	TArray<UObject*> EditedAssets = AssetEditorSubsystem->GetAllEditedAssets();
@@ -75,20 +76,32 @@ UObject* GetLastOpenedObject()
 	return LastOpenedObject;
 }
 
+static UObject* LoadDiffAsset(FString SrcFilePath)
+{
+	if (SrcFilePath.IsEmpty())
+	{
+		return nullptr;
+	}
+
+	UObject* AssetObj = nullptr;
+	FString DestFilePath = FPaths::Combine(*FPaths::DiffDir(), FPaths::GetCleanFilename(SrcFilePath));
+
+	// UE cannot open files with certain special characters in them (like 
+	// the # symbol), so we make a copy of the file with a more UE digestible 
+	// path (since this may be a perforce temp file)
+	IFileManager::Get().Copy(*DestFilePath, *SrcFilePath);
+	if (UPackage* AssetPkg = LoadPackage(/*Outer =*/nullptr, *DestFilePath, LOAD_None))
+	{
+		AssetObj = AssetPkg->FindAssetInPackage();
+	}
+
+	return AssetObj;
+}
+
 void FBPDifferModule::PluginButtonClicked()
 {
 	// Put your "OnButtonClicked" stuff here
-	FString EditorPath = FPaths::Combine(FPlatformProcess::BaseDir(), TEXT("UnrealEditor.exe"));
-
-	// Combine params
-	FString Params = TEXT("");
-	Params.Append(FPaths::GetProjectFilePath());
-	Params.Append(TEXT(" -diff "));
-
-	FString AbsoluteCurrentAssetPath = UKismetSystemLibrary::GetSystemPath(GetLastOpenedObject());
-	Params.Append(AbsoluteCurrentAssetPath);
-
-	// Open file dialog to select blueprint
+	// Open file dialog to select blueprint asset
 	TArray<FString> AbsoluteOpenFileNames;
 	FString ExtensionStr = TEXT("Blueprint|*.uasset");
 	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
@@ -98,12 +111,37 @@ void FBPDifferModule::PluginButtonClicked()
 		return;
 	}
 
-	Params.Append(" ");
-	Params.Append(AbsoluteOpenFileNames[0]);
+	// Load select asset
+	UObject* NewAsset = LoadDiffAsset(AbsoluteOpenFileNames[0]);
+	if (NewAsset == nullptr)
+	{
+		FText DialogText = FText::Format(
+			LOCTEXT("AssetLoadError", "Failed to load select asset in {0}."),
+			FText::FromString(AbsoluteOpenFileNames[0])
+		);
+		UE_LOG(LogBPDiffer, Error, TEXT("%s"), *DialogText.ToString());
+		FMessageDialog::Open(EAppMsgType::Ok, DialogText);
+		return;
+	}
+
+	UObject* OldAsset = GetLastOpenedObject();
+
+	// Verify asset types
+	if (OldAsset->GetClass() != NewAsset->GetClass())
+	{
+		FText DialogText = FText::Format(
+			LOCTEXT("TypeMismatchError", "{0}"),
+			FText::FromString(TEXT("Cannot compare files of different asset types."))
+		);
+		UE_LOG(LogBPDiffer, Error, TEXT("%s"), *DialogText.ToString());
+		FMessageDialog::Open(EAppMsgType::Ok, DialogText);		
+		return;
+	}
 
 	// Start blueprint diff
-	UE_LOG(LogBPDiffer, Log, TEXT("Blueprint Diff Command: %s %s"), *EditorPath, *Params);
-	FPlatformProcess::CreateProc(*EditorPath, *Params, true, false, false, nullptr, 0, nullptr, nullptr);
+	UE_LOG(LogBPDiffer, Log, TEXT("Execute Blueprint Diff Command..."));
+	IAssetTools& AssetTools = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools").Get();
+	AssetTools.DiffAssets(OldAsset, NewAsset, FRevisionInfo::InvalidRevision(), FRevisionInfo::InvalidRevision());
 }
 
 void FBPDifferModule::RegisterMenus()
