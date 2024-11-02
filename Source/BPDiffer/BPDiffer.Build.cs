@@ -36,13 +36,15 @@ public class BPDiffer : ModuleRules
 			{
 				"Projects",
 				"InputCore",
-				"EditorFramework",
 				"UnrealEd",
 				"ToolMenus",
 				"CoreUObject",
 				"Engine",
 				"Slate",
 				"SlateCore",
+                "DesktopPlatform",
+                "SlateCore"
+
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
