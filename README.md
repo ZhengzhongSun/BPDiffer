@@ -13,7 +13,7 @@ This is a simple Unreal Editor plugin that allows user to Blueprint Diff with ev
 ## Requirements
 
 - Windows
-- UE 5.4 or newer
+- UE 4.27
 
 ## How to install
 
@@ -42,3 +42,4 @@ This is a simple Unreal Editor plugin that allows user to Blueprint Diff with ev
 ## To Do
 
 - [x] Open Blueprint Diff window directly in current Unreal Editor instead of creating another Editor process. [Reference Solution](https://github.com/EpicGames/UnrealEngine/blob/c830445187784f1269f43b56f095493a27d5a636/Engine/Source/Editor/UnrealEd/Private/EditorCommandLineUtils.cpp#L454)
+- [x] Add a diff between branches while using source control E.g. Perforce.

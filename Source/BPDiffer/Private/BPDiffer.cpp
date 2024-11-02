@@ -106,7 +106,7 @@ void FBPDifferModule::PluginButtonClicked()
 	FString ExtensionStr = TEXT("Blueprint|*.uasset");
 	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
 	DesktopPlatform->OpenFileDialog(nullptr, TEXT("Please select the blueprint you want to diff:"), FPaths::ConvertRelativePathToFull(FPaths::ProjectDir()), TEXT(""), *ExtensionStr, EFileDialogFlags::None, AbsoluteOpenFileNames);
-	if (AbsoluteOpenFileNames.IsEmpty()) {
+	if (AbsoluteOpenFileNames.Num() == 0) {
 		UE_LOG(LogBPDiffer, Warning, TEXT("No Selected File! Canceling Diff Operation..."));
 		return;
 	}
