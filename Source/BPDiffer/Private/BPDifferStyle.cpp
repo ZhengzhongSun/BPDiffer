@@ -6,7 +6,6 @@
 #include "Styling/SlateStyleRegistry.h"
 #include "Slate/SlateGameResources.h"
 #include "Interfaces/IPluginManager.h"
-#include "Styling/SlateStyleMacros.h"
 
 #define RootToContentDir Style->RootToContentDir
 
@@ -34,7 +33,6 @@ FName FBPDifferStyle::GetStyleSetName()
 	return StyleSetName;
 }
 
-
 const FVector2D Icon16x16(16.0f, 16.0f);
 const FVector2D Icon20x20(20.0f, 20.0f);
 
@@ -43,7 +41,7 @@ TSharedRef< FSlateStyleSet > FBPDifferStyle::Create()
 	TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("BPDifferStyle"));
 	Style->SetContentRoot(IPluginManager::Get().FindPlugin("BPDiffer")->GetBaseDir() / TEXT("Resources"));
 
-	Style->Set("BPDiffer.PluginAction", new IMAGE_BRUSH_SVG(TEXT("BPDifferButtonIcon"), Icon20x20));
+	Style->Set("BPDiffer.PluginAction", new FSlateImageBrush(RootToContentDir(TEXT("BPDifferButtonIcon"), TEXT(".png")), Icon20x20));
 	return Style;
 }
 

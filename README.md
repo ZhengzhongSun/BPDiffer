@@ -13,7 +13,7 @@ This is a simple Unreal Editor plugin that allows user to Blueprint Diff with ev
 ## Requirements
 
 - Windows
-- UE 5.4 or newer
+- UE 4.27, 5.0 and newer
 
 ## How to install
 
@@ -25,7 +25,7 @@ This is a simple Unreal Editor plugin that allows user to Blueprint Diff with ev
 ## How to use
 
 1. Open any blueprint asset you want to diff
-2. You should see a new button in the toolbar called "BPDiffer", click it
+2. You could see a new button in the toolbar called "BPDiffer", click it
 
 	<img src="Docs/Images/BPDifferButton.jpg"/>
 
